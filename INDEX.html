@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Журнал заказов — Праздничное оформление</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0f0f13;
+  --bg2:#17171e;
+  --bg3:#1e1e28;
+  --border:#2a2a38;
+  --border2:#35354a;
+  --text:#f0f0f5;
+  --text2:#9090a8;
+  --text3:#5a5a72;
+  --gold:#d4a843;
+  --gold2:#f0c86a;
+  --gold-bg:rgba(212,168,67,.1);
+  --green:#3dba7a;
+  --green-bg:rgba(61,186,122,.1);
+  --red:#e05555;
+  --red-bg:rgba(224,85,85,.1);
+  --blue:#5b8dee;
+  --blue-bg:rgba(91,141,238,.1);
+  --purple:#9b6dff;
+  --radius:12px;
+  --radius-sm:8px;
+  --shadow:0 8px 32px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Manrope',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+
+/* Header */
+.header{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--gold),var(--gold2));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.logo-text{font-family:'Playfair Display',serif;font-size:17px;color:var(--text);line-height:1.2}
+.logo-sub{font-size:11px;color:var(--text3);font-family:'Manrope',sans-serif;font-weight:400}
+.cloud-pill{display:flex;align-items:center;gap:6px;padding:5px 10px;background:var(--bg3);border:1px solid var(--border);border-radius:100px;font-size:11px;color:var(--text2)}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--text3);flex-shrink:0;transition:background .3s}
+.dot.ok{background:var(--green)}
+.dot.err{background:var(--red)}
+.dot.loading{background:var(--gold);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Tabs */
+.tabs{display:flex;gap:2px;padding:16px 20px 0;overflow-x:auto}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:9px 16px;border-radius:var(--radius-sm) var(--radius-sm) 0 0;cursor:pointer;font-size:13px;font-weight:500;color:var(--text2);background:none;border:1px solid transparent;border-bottom:none;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.tab:hover{color:var(--text);background:var(--bg3)}
+.tab.active{color:var(--gold);background:var(--bg2);border-color:var(--border);border-bottom-color:var(--bg2)}
+
+/* Main content */
+.content{background:var(--bg2);border:1px solid var(--border);border-radius:0 var(--radius) var(--radius) var(--radius);margin:0 20px;padding:20px}
+
+/* Sections */
+.section{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+.section-title{font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:14px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.grid2{grid-template-columns:1fr}}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:11px;font-weight:600;color:var(--text2)}
+.field input,.field select,.field textarea{
+  background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-sm);
+  padding:9px 12px;font-size:13px;color:var(--text);font-family:'Manrope',sans-serif;
+  transition:border-color .2s;outline:none;width:100%
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold)}
+.field select{cursor:pointer}
+.field select option{background:var(--bg2)}
+.field textarea{resize:vertical;min-height:60px}
+.field input[type=datetime-local]::-webkit-calendar-picker-indicator{filter:invert(.5);cursor:pointer}
+
+/* Expense rows */
+.exp-row{display:grid;grid-template-columns:1fr 130px 32px;gap:8px;align-items:center;margin-bottom:8px}
+.btn-icon{width:32px;height:32px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .2s;flex-shrink:0}
+.btn-icon:hover{border-color:var(--red);color:var(--red)}
+.btn-add-exp{display:flex;align-items:center;gap:6px;padding:8px 14px;background:none;border:1px dashed var(--border2);border-radius:var(--radius-sm);cursor:pointer;font-size:12px;color:var(--text2);margin-top:4px;font-family:'Manrope',sans-serif;transition:all .2s}
+.btn-add-exp:hover{border-color:var(--gold);color:var(--gold)}
+
+/* Profit preview */
+.profit-box{margin-top:14px;padding:12px 16px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--radius-sm);display:flex;justify-content:space-between;align-items:center}
+.profit-label{font-size:12px;color:var(--text2)}
+.profit-val{font-size:22px;font-weight:700;color:var(--green);transition:color .2s}
+.profit-val.neg{color:var(--red)}
+
+/* Buttons */
+.btn-primary{width:100%;padding:12px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#1a1000;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:700;font-family:'Manrope',sans-serif;margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .2s}
+.btn-primary:hover{opacity:.88}
+.btn-primary:disabled{opacity:.4;cursor:not-allowed}
+.btn-outline{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;background:none;border:1px solid var(--border2);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--text);font-family:'Manrope',sans-serif;transition:all .2s}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.btn-danger{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;background:none;border:1px solid var(--red-bg);border-radius:var(--radius-sm);cursor:pointer;font-size:13px;color:var(--red);font-family:'Manrope',sans-serif;transition:all .2s}
+.btn-danger:hover{background:var(--red-bg)}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:480px){.stats{grid-template-columns:1fr 1fr;}.stats .stat:last-child{grid-column:1/-1}}
+.stat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.stat-label{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.stat-val{font-size:20px;font-weight:700}
+.stat-val.blue{color:var(--blue)}
+.stat-val.green{color:var(--green)}
+.stat-val.red{color:var(--red)}
+
+/* Orders table */
+.table-wrap{overflow-x:auto;border-radius:var(--radius);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+thead tr{background:var(--bg3)}
+th{padding:10px 12px;text-align:left;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap;border-bottom:1px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.02)}
+.exp-sub-row td{background:rgba(0,0,0,.15);font-size:12px;color:var(--text2)}
+.exp-sub-row:hover td{background:rgba(0,0,0,.2)!important}
+
+/* Badge */
+.badge{display:inline-block;padding:3px 9px;border-radius:100px;font-size:11px;font-weight:600;white-space:nowrap}
+.b-new{background:rgba(212,168,67,.15);color:var(--gold)}
+.b-ok{background:rgba(91,141,238,.15);color:var(--blue)}
+.b-work{background:rgba(155,109,255,.15);color:var(--purple)}
+.b-done{background:rgba(61,186,122,.15);color:var(--green)}
+.b-cancel{background:rgba(224,85,85,.15);color:var(--red)}
+
+/* Avatar */
+.ava{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--purple));display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+
+/* Action btns in table */
+.row-actions{display:flex;gap:4px;opacity:0;transition:opacity .15s}
+tr:hover .row-actions{opacity:1}
+.act-btn{width:26px;height:26px;background:none;border:1px solid var(--border2);border-radius:6px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.act-btn.edit:hover{border-color:var(--blue);color:var(--blue)}
+.act-btn.del:hover{border-color:var(--red);color:var(--red)}
+
+/* Empty state */
+.empty{text-align:center;padding:48px 20px;color:var(--text3)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-text{font-size:14px}
+
+/* Modal */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;align-items:center;justify-content:center;padding:16px;backdrop-filter:blur(4px)}
+.overlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--radius);width:100%;max-width:540px;max-height:90vh;overflow-y:auto;padding:0}
+.modal-head{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--bg2);z-index:1}
+.modal-title{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
+.modal-close{background:none;border:none;cursor:pointer;font-size:20px;color:var(--text2);width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:6px;transition:all .2s}
+.modal-close:hover{background:var(--bg3);color:var(--text)}
+.modal-body{padding:20px}
+.modal-foot{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:10px;flex-wrap:wrap}
+.modal-foot .btn-primary{flex:1;margin:0}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--bg3);border:1px solid var(--border2);color:var(--text);padding:10px 20px;border-radius:100px;font-size:13px;z-index:999;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Contacts */
+.contact-card{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);margin-bottom:8px}
+.contact-info{flex:1;min-width:0}
+.contact-name{font-weight:600;font-size:14px;margin-bottom:2px}
+.contact-meta{font-size:12px;color:var(--text2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.contact-stats{text-align:right;flex-shrink:0}
+.contact-orders{font-size:18px;font-weight:700;color:var(--gold)}
+.contact-sum{font-size:11px;color:var(--text2)}
+
+/* Backup */
+.backup-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:8px}
+</style>
+</head>
+<body>
+<h2 class="sr-only">Журнал заказов — Праздничное оформление</h2>
+<div id="toast" class="toast"></div>
+
+<!-- Edit Modal -->
+<div class="overlay" id="edit-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">✦ Редактирование заказа</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="section">
+        <div class="section-title">Клиент</div>
+        <div class="grid2" style="margin-bottom:12px">
+          <div class="field"><label>Имя заказчика</label><input id="e-name"></div>
+          <div class="field"><label>Телефон</label><input id="e-phone"></div>
+        </div>
+        <div class="field"><label>Адрес / площадка</label><input id="e-addr"></div>
+      </div>
+      <div class="section">
+        <div class="section-title">Детали</div>
+        <div class="grid2" style="margin-bottom:12px">
+          <div class="field"><label>Дата и время</label><input type="datetime-local" id="e-date"></div>
+          <div class="field"><label>Статус</label>
+            <select id="e-status">
+              <option>Новый</option><option>Подтверждён</option><option>В работе</option><option>Доставляется</option><option>Выполнен</option><option>Отменён</option>
+            </select>
+          </div>
+        </div>
+        <div class="field"><label>Описание заказа</label><textarea id="e-desc"></textarea></div>
+      </div>
+      <div class="section">
+        <div class="section-title">Финансы</div>
+        <div class="field" style="max-width:200px;margin-bottom:14px"><label>Стоимость (₽)</label><input type="number" id="e-price" min="0" step="1" oninput="updateEditProfit()"></div>
+        <div class="section-title">Расходы</div>
+        <div id="edit-exp-list"></div>
+        <button class="btn-add-exp" onclick="addEditExp()">+ Добавить расход</button>
+        <div class="profit-box" style="margin-top:12px">
+          <span class="profit-label">Прибыль</span>
+          <span id="edit-profit-val" class="profit-val">₽ 0</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-danger" onclick="deleteFromModal()">🗑 Удалить</button>
+      <button class="btn-primary" id="btn-save" onclick="saveEdit()">💾 Сохранить изменения</button>
+    </div>
+  </div>
+</div>
+
+<!-- App -->
+<div class="header">
+  <div class="logo">
+    <div class="logo-icon">🎉</div>
+    <div>
+      <div class="logo-text">Журнал заказов</div>
+      <div class="logo-sub">Праздничное оформление</div>
+    </div>
+  </div>
+  <div class="cloud-pill"><div class="dot loading" id="cdot"></div><span id="cmsg">Загрузка...</span></div>
+</div>
+
+<div style="padding:0 20px">
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('form')">＋ Новый заказ</button>
+    <button class="tab" onclick="showTab('journal')">Журнал <span id="oc"></span></button>
+    <button class="tab" onclick="showTab('contacts')">Контакты <span id="cc"></span></button>
+    <button class="tab" onclick="showTab('backup')">Резервные копии</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- FORM -->
+<div id="tab-form">
+  <div class="section">
+    <div class="section-title">Данные клиента</div>
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="field"><label>Имя заказчика</label><input id="f-name" placeholder="Иванова Мария"></div>
+      <div class="field"><label>Телефон</label><input id="f-phone" placeholder="+7 900 000 00 00"></div>
+    </div>
+    <div class="field"><label>Адрес / площадка</label><input id="f-addr" placeholder="ул. Цветочная, 12 — зал «Магнолия»"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Детали заказа</div>
+    <div class="grid2" style="margin-bottom:12px">
+      <div class="field"><label>Дата и время</label><input type="datetime-local" id="f-date"></div>
+      <div class="field"><label>Статус</label>
+        <select id="f-status">
+          <option>Новый</option><option>Подтверждён</option><option>В работе</option><option>Доставляется</option><option>Выполнен</option><option>Отменён</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>Описание заказа</label><textarea id="f-desc" placeholder="Оформление зала свадьбы — арки, столы, флористика..."></textarea></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Финансы</div>
+    <div class="field" style="max-width:200px;margin-bottom:14px"><label>Стоимость для клиента (₽)</label><input type="number" id="f-price" placeholder="0" min="0" step="1" oninput="updateProfit()"></div>
+    <div class="section-title">Расходы по заказу</div>
+    <div id="exp-list"></div>
+    <button class="btn-add-exp" onclick="addExp()">+ Добавить статью расхода</button>
+    <div class="profit-box">
+      <span class="profit-label">Прибыль по заказу</span>
+      <span id="profit-val" class="profit-val">₽ 0</span>
+    </div>
+  </div>
+  <button class="btn-primary" id="btn-add" onclick="addOrder()">✦ Добавить заказ</button>
+</div>
+
+<!-- JOURNAL -->
+<div id="tab-journal" style="display:none">
+  <div class="stats">
+    <div class="stat"><div class="stat-label">Заказов</div><div class="stat-val blue" id="s-count">0</div></div>
+    <div class="stat"><div class="stat-label">Выручка</div><div class="stat-val green" id="s-rev">₽ 0</div></div>
+    <div class="stat"><div class="stat-label">Прибыль</div><div class="stat-val green" id="s-profit">₽ 0</div></div>
+  </div>
+  <div class="table-wrap">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Дата</th><th>Описание</th><th>Клиент</th>
+        <th style="text-align:right">Стоимость</th><th style="text-align:right">Расходы</th><th style="text-align:right">Прибыль</th>
+        <th>Статус</th><th></th>
+      </tr></thead>
+      <tbody id="orders-tbody"></tbody>
+    </table>
+  </div>
+  <div id="j-empty" class="empty"><div class="empty-icon">🎀</div><div class="empty-text">Заказов пока нет — добавьте первый!</div></div>
+</div>
+
+<!-- CONTACTS -->
+<div id="tab-contacts" style="display:none">
+  <div id="contacts-list"></div>
+  <div id="c-empty" class="empty"><div class="empty-icon">👤</div><div class="empty-text">Контакты появятся после добавления заказов</div></div>
+</div>
+
+<!-- BACKUP -->
+<div id="tab-backup" style="display:none">
+  <div class="section">
+    <div class="section-title">Облачное хранилище</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.7">Данные сохраняются в localStorage вашего браузера. Используйте резервные копии для переноса на другие устройства.</p>
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px">
+      <div class="dot ok" id="cdot2"></div>
+      <span style="font-size:12px;color:var(--text2)" id="cmsg2">Локальное хранилище активно</span>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">Резервная копия</div>
+    <p style="font-size:13px;color:var(--text2);margin-bottom:14px;line-height:1.7">Скачайте JSON-файл и сохраните на Яндекс Диске или Google Drive. Для переноса на другое устройство — загрузите файл обратно.</p>
+    <div class="backup-row">
+      <button class="btn-outline" onclick="exportBackup()">⬇ Скачать копию</button>
+      <label class="btn-outline" style="cursor:pointer">⬆ Загрузить копию<input type="file" accept=".json" onchange="importBackup(event)" style="display:none"></label>
+    </div>
+    <div id="backup-info" style="font-size:12px;color:var(--text3);margin-top:8px"></div>
+  </div>
+  <div class="section">
+    <div class="section-title">Опасная зона</div>
+    <button class="btn-danger" onclick="clearAll()">🗑 Удалить все данные</button>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<script>
+const KEY='porders_v2';
+let orders=[];
+let editId=null;
+
+function load(){ try{ const d=localStorage.getItem(KEY); orders=d?JSON.parse(d):[]; }catch(e){ orders=[]; } }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(orders)); setStatus('ok','Сохранено · '+new Date().toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})); }catch(e){ setStatus('err','Ошибка сохранения'); } }
+
+function setStatus(s,m){
+  const dot=document.getElementById('cdot'); const msg=document.getElementById('cmsg');
+  const dot2=document.getElementById('cdot2'); const msg2=document.getElementById('cmsg2');
+  const cls=s==='ok'?'ok':s==='loading'?'loading':'err';
+  [dot,dot2].forEach(d=>{if(d){d.className='dot '+cls;}});
+  if(msg) msg.textContent=m; if(msg2) msg2.textContent=m;
+}
+
+function toast(m,d=2800){ const el=document.getElementById('toast'); el.textContent=m; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),d); }
+
+function showTab(t){
+  ['form','journal','contacts','backup'].forEach((id,i)=>{
+    document.getElementById('tab-'+id).style.display=id===t?'':'none';
+    document.querySelectorAll('.tab')[i].classList.toggle('active',id===t);
+  });
+  if(t==='journal') renderJournal();
+  if(t==='contacts') renderContacts();
+}
+
+function fmtRub(n){ return '₽\u00a0'+Math.round(n||0).toLocaleString('ru'); }
+function fmtDate(d){ if(!d) return '—'; const dt=new Date(d); return dt.toLocaleDateString('ru',{day:'2-digit',month:'2-digit',year:'2-digit'})+' '+dt.toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'}); }
+function initials(n){ return (n||'?').split(' ').map(w=>w[0]||'').join('').slice(0,2).toUpperCase(); }
+function statusBadge(s){
+  const m={'Новый':'b-new','Подтверждён':'b-ok','В работе':'b-work','Доставляется':'b-work','Выполнен':'b-done','Отменён':'b-cancel'};
+  return `<span class="badge ${m[s]||'b-new'}">${s}</span>`;
+}
+function updateCounts(){
+  document.getElementById('oc').textContent=orders.length?`(${orders.length})`:'';
+  const p=new Set(orders.map(o=>o.phone||o.name).filter(Boolean));
+  document.getElementById('cc').textContent=p.size?`(${p.size})`:'';
+}
+
+// Expense rows
+function addExp(n='',a=''){
+  const id='e'+Date.now()+Math.random().toString(36).slice(2,5);
+  const d=document.createElement('div'); d.className='exp-row'; d.id=id;
+  d.innerHTML=`<input placeholder="Цветы, гелий, транспорт..." value="${n}" oninput="updateProfit()">
+    <input type="number" placeholder="₽ 0" value="${a}" min="0" step="1" style="text-align:right" oninput="updateProfit()">
+    <button class="btn-icon" onclick="this.closest('.exp-row').remove();updateProfit()" title="Удалить">✕</button>`;
+  document.getElementById('exp-list').appendChild(d); updateProfit();
+}
+function addEditExp(n='',a=''){
+  const id='ee'+Date.now()+Math.random().toString(36).slice(2,5);
+  const d=document.createElement('div'); d.className='exp-row'; d.id=id;
+  d.innerHTML=`<input placeholder="Цветы, гелий, транспорт..." value="${n}" oninput="updateEditProfit()">
+    <input type="number" placeholder="₽ 0" value="${a}" min="0" step="1" style="text-align:right" oninput="updateEditProfit()">
+    <button class="btn-icon" onclick="this.closest('.exp-row').remove();updateEditProfit()" title="Удалить">✕</button>`;
+  document.getElementById('edit-exp-list').appendChild(d); updateEditProfit();
+}
+function getExps(listId){
+  return Array.from(document.querySelectorAll('#'+listId+' .exp-row')).map(r=>{
+    const inp=r.querySelectorAll('input');
+    return{name:inp[0].value.trim(),amount:parseFloat(inp[1].value)||0};
+  }).filter(e=>e.name||e.amount>0);
+}
+function updateProfit(){
+  const p=parseFloat(document.getElementById('f-price').value)||0;
+  const e=getExps('exp-list').reduce((s,x)=>s+x.amount,0);
+  const v=p-e; const el=document.getElementById('profit-val');
+  el.textContent=fmtRub(v); el.className='profit-val'+(v<0?' neg':'');
+}
+function updateEditProfit(){
+  const p=parseFloat(document.getElementById('e-price').value)||0;
+  const e=getExps('edit-exp-list').reduce((s,x)=>s+x.amount,0);
+  const v=p-e; const el=document.getElementById('edit-profit-val');
+  el.textContent=fmtRub(v); el.className='profit-val'+(v<0?' neg':'');
+}
+
+// Sort: nearest upcoming first, then past by most recent
+function sortByNearest(a,b){
+  const now=Date.now();
+  const da=new Date(a.date).getTime();
+  const db=new Date(b.date).getTime();
+  const futA=da>=now; const futB=db>=now;
+  if(futA&&futB) return da-db; // both future: nearest first
+  if(!futA&&!futB) return db-da; // both past: most recent first
+  return futA?-1:1; // future before past
+}
+
+// Add order
+function addOrder(){
+  const name=document.getElementById('f-name').value.trim();
+  const desc=document.getElementById('f-desc').value.trim();
+  const price=parseFloat(document.getElementById('f-price').value)||0;
+  if(!name){ toast('Введите имя заказчика'); return; }
+  if(!desc){ toast('Введите описание'); return; }
+  if(price<=0){ toast('Введите стоимость'); return; }
+  const exps=getExps('exp-list');
+  const totalExp=exps.reduce((s,e)=>s+e.amount,0);
+  const btn=document.getElementById('btn-add');
+  btn.disabled=true; btn.textContent='Сохранение...';
+  orders.push({
+    id:Date.now(), date:document.getElementById('f-date').value,
+    name, phone:document.getElementById('f-phone').value.trim(),
+    addr:document.getElementById('f-addr').value.trim(), desc, price,
+    expenses:exps, totalExp, profit:price-totalExp,
+    status:document.getElementById('f-status').value
+  });
+  orders.sort(sortByNearest);
+  save(); updateCounts();
+  btn.disabled=false; btn.textContent='✦ Добавить заказ';
+  ['f-name','f-phone','f-addr','f-desc','f-price'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-status').value='Новый';
+  document.getElementById('exp-list').innerHTML=''; updateProfit();
+  toast('Заказ добавлен ✓'); showTab('journal');
+}
+
+// Render journal
+function renderJournal(){
+  const tb=document.getElementById('orders-tbody');
+  const em=document.getElementById('j-empty');
+  if(!orders.length){ tb.innerHTML=''; em.style.display=''; return; }
+  em.style.display='none';
+  let tot=0,totE=0,totP=0;
+  tb.innerHTML=orders.map((o,i)=>{
+    tot+=o.price||0; totE+=o.totalExp||0; totP+=o.profit||0;
+    const exRows=(o.expenses||[]).filter(e=>e.name).map(e=>
+      `<tr class="exp-sub-row"><td></td><td></td><td style="padding-left:22px">↳ ${e.name}</td><td></td><td></td><td style="text-align:right;color:var(--red)">−${fmtRub(e.amount)}</td><td></td><td></td><td></td></tr>`
+    ).join('');
+    return `<tr>
+      <td style="color:var(--text3);font-size:12px">${i+1}</td>
+      <td style="font-size:12px;white-space:nowrap;color:var(--text2)">${fmtDate(o.date)}</td>
+      <td style="max-width:160px">${o.desc}</td>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="ava">${initials(o.name)}</div><div><div style="font-weight:600">${o.name}</div><div style="font-size:11px;color:var(--text2)">${o.phone||''}</div></div></div></td>
+      <td style="text-align:right;font-weight:700;color:var(--green);white-space:nowrap">${fmtRub(o.price)}</td>
+      <td style="text-align:right;color:var(--red);white-space:nowrap">${fmtRub(o.totalExp)}</td>
+      <td style="text-align:right;white-space:nowrap;font-weight:700" style="color:${o.profit>=0?'var(--green)':'var(--red)'}">${fmtRub(o.profit)}</td>
+      <td>${statusBadge(o.status)}</td>
+      <td><div class="row-actions"><button class="act-btn edit" onclick="openEdit(${o.id})" title="Редактировать">✏</button></div></td>
+    </tr>${exRows}`;
+  }).join('');
+  document.getElementById('s-count').textContent=orders.length;
+  document.getElementById('s-rev').textContent=fmtRub(tot);
+  const sp=document.getElementById('s-profit');
+  sp.textContent=fmtRub(totP); sp.className='stat-val '+(totP>=0?'green':'red');
+}
+
+// Render contacts
+function renderContacts(){
+  const cl=document.getElementById('contacts-list');
+  const em=document.getElementById('c-empty');
+  const map={};
+  orders.forEach(o=>{
+    if(!o.name) return;
+    const k=o.phone||o.name;
+    if(!map[k]) map[k]={name:o.name,phone:o.phone,addr:o.addr,count:0,total:0};
+    map[k].count++; map[k].total+=o.price||0;
+  });
+  const list=Object.values(map).sort((a,b)=>a.name.localeCompare(b.name,'ru'));
+  if(!list.length){ cl.innerHTML=''; em.style.display=''; return; }
+  em.style.display='none';
+  cl.innerHTML=list.map(c=>`
+    <div class="contact-card">
+      <div class="ava" style="width:38px;height:38px;font-size:13px">${initials(c.name)}</div>
+      <div class="contact-info">
+        <div class="contact-name">${c.name}</div>
+        <div class="contact-meta">${[c.phone,c.addr].filter(Boolean).join(' · ')}</div>
+      </div>
+      <div class="contact-stats">
+        <div class="contact-orders">${c.count}</div>
+        <div class="contact-sum">${fmtRub(c.total)}</div>
+      </div>
+    </div>`).join('');
+}
+
+// Edit modal
+function openEdit(id){
+  const o=orders.find(x=>x.id===id); if(!o) return;
+  editId=id;
+  document.getElementById('e-name').value=o.name||'';
+  document.getElementById('e-phone').value=o.phone||'';
+  document.getElementById('e-addr').value=o.addr||'';
+  document.getElementById('e-desc').value=o.desc||'';
+  document.getElementById('e-price').value=o.price||'';
+  document.getElementById('e-status').value=o.status||'Новый';
+  if(o.date){ const d=new Date(o.date); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); document.getElementById('e-date').value=d.toISOString().slice(0,16); }
+  const el=document.getElementById('edit-exp-list'); el.innerHTML='';
+  (o.expenses||[]).forEach(e=>addEditExp(e.name,e.amount));
+  updateEditProfit();
+  document.getElementById('edit-modal').classList.add('open');
+}
+function closeModal(){ document.getElementById('edit-modal').classList.remove('open'); editId=null; }
+document.getElementById('edit-modal').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+
+function saveEdit(){
+  if(!editId) return;
+  const idx=orders.findIndex(x=>x.id===editId); if(idx<0) return;
+  const name=document.getElementById('e-name').value.trim();
+  const desc=document.getElementById('e-desc').value.trim();
+  const price=parseFloat(document.getElementById('e-price').value)||0;
+  if(!name){ toast('Введите имя'); return; }
+  if(!desc){ toast('Введите описание'); return; }
+  if(price<=0){ toast('Введите стоимость'); return; }
+  const exps=getExps('edit-exp-list');
+  const totalExp=exps.reduce((s,e)=>s+e.amount,0);
+  const btn=document.getElementById('btn-save');
+  btn.disabled=true; btn.textContent='Сохранение...';
+  orders[idx]={...orders[idx],name,phone:document.getElementById('e-phone').value.trim(),addr:document.getElementById('e-addr').value.trim(),date:document.getElementById('e-date').value,desc,price,expenses:exps,totalExp,profit:price-totalExp,status:document.getElementById('e-status').value};
+  orders.sort(sortByNearest);
+  save(); updateCounts(); closeModal(); renderJournal();
+  btn.disabled=false; btn.textContent='💾 Сохранить изменения';
+  toast('Заказ обновлён ✓');
+}
+function deleteFromModal(){
+  if(!editId) return;
+  if(!confirm('Удалить этот заказ?')) return;
+  orders=orders.filter(o=>o.id!==editId);
+  save(); closeModal(); updateCounts(); renderJournal();
+  toast('Заказ удалён');
+}
+
+// Backup
+function exportBackup(){
+  const blob=new Blob([JSON.stringify({exported:new Date().toISOString(),orders},null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='zakazy_'+new Date().toISOString().slice(0,10)+'.json'; a.click();
+  document.getElementById('backup-info').textContent='Скачано: '+orders.length+' заказов · '+new Date().toLocaleString('ru');
+  toast('Резервная копия скачана');
+}
+function importBackup(e){
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader();
+  r.onload=evt=>{
+    try{
+      const d=JSON.parse(evt.target.result);
+      const imp=d.orders||d; if(!Array.isArray(imp)) throw new Error();
+      if(!confirm(`Загрузить ${imp.length} заказов? Текущие данные будут заменены.`)) return;
+      orders=imp; save(); updateCounts();
+      document.getElementById('backup-info').textContent='Загружено: '+orders.length+' заказов';
+      toast('Резервная копия восстановлена');
+    }catch(err){ toast('Ошибка: неверный формат файла'); }
+  };
+  r.readAsText(file);
+}
+function clearAll(){
+  if(!confirm('Удалить ВСЕ данные? Это действие нельзя отменить.')) return;
+  orders=[]; save(); updateCounts(); renderJournal();
+  toast('Все данные удалены');
+}
+
+// Init
+load();
+const now=new Date(); now.setMinutes(now.getMinutes()-now.getTimezoneOffset());
+document.getElementById('f-date').value=now.toISOString().slice(0,16);
+setStatus('ok','Данные загружены · '+orders.length+' заказов');
+updateCounts();
+</script>
+</body>
+</html>
